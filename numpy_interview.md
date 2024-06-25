@@ -23,6 +23,9 @@ To view the live version of the page, click here. ©  by
 
 15.  What do you understand by Vectorization in NumPy? 16.  How is vstack() different from hstack() in NumPy? 17.  How do you find the local peaks (or maxima) in a 1-D NumPy Array? 18.  How is Vectorization related to Broadcasting in NumPy?
 
+19.  What are the differences between `np.copy()` and view in NumPy?
+20.  How do you handle missing data in NumPy arrays?
+
 # For Experienced (.....Continued)
 
 19.  What happens when the split() method is used for splitting NumPy arrays? 20.  What happens when we use the arrays_split() method for splitting the NumPy array?

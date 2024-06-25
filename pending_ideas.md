@@ -28,6 +28,10 @@ This file tracks ideas and topics that can be added to the existing notebooks to
    - Techniques to avoid loops through vectorization.
    - Understanding strides and memory layout for memory efficiency.
 
+7. **Random Sampling**
+   - Generating random numbers and samples from various distributions.
+   - Using `np.random` for simulations and statistical modeling.
+
 ## PyTorch
 
 1. **Tensors**
