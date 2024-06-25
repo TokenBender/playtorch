@@ -32,6 +32,18 @@ This file tracks ideas and topics that can be added to the existing notebooks to
    - Generating random numbers and samples from various distributions.
    - Using `np.random` for simulations and statistical modeling.
 
+8. **Vectorization in NumPy**
+   - Understanding and implementing vectorization for performance optimization.
+
+9. **Handling Missing Data in NumPy Arrays**
+   - Techniques for dealing with missing data in NumPy arrays.
+
+10. **Implementing the Moving Average for the 1D Array in NumPy**
+    - Implementing and understanding the moving average concept in NumPy.
+
+11. **Difference between `fliplr` and `flipud` Methods in NumPy**
+    - Understanding the differences and use cases for these methods.
+
 ## PyTorch
 
 1. **Tensors**
@@ -65,4 +77,7 @@ This file tracks ideas and topics that can be added to the existing notebooks to
 8. **Advanced Topics**
    - Using `torch.cuda.amp` for mixed precision training.
    - Introduction to model quantization.
+
+9. **Difference between `np.copy()` and View in NumPy**
+   - Understanding the differences and implications of using `np.copy()` versus views.
 
