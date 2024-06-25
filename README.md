@@ -25,12 +25,7 @@ This repository contains a collection of tutorials focusing on NumPy and PyTorch
 
 ## Getting Started
 
-To get started with the tutorials, clone the repository and open the respective files in your preferred environment. For Jupyter notebooks (`.ipynb` files), you will need Jupyter Notebook or JupyterLab installed. For Python scripts (`.py` files), any Python IDE or text editor will suffice.
-
-```bash
-git clone https://github.com/your-repo-url.git
-cd your-repo-directory
-```
+To get started with the tutorials, open the respective files in your preferred environment. For Jupyter notebooks (`.ipynb` files), you will need Jupyter Notebook or JupyterLab installed. For Python scripts (`.py` files), any Python IDE or text editor will suffice.
 
 ## Prerequisites
 
