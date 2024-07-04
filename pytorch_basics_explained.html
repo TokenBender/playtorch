@@ -45,7 +45,7 @@
     <h1>PyTorch Basics and Multi-Layer Perceptrons (MLPs) Explained</h1>
     
     <h2>Setup</h2>
-    <p>First, let's import the necessary libraries and set up our environment.</p>
+    <p>First, let's import the necessary libraries and set up our environment. We will use PyTorch for building and training neural networks, NumPy for numerical operations, and Matplotlib for plotting.</p>
     <pre><code>import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -60,14 +60,16 @@ np.random.seed(42)
 # Check if CUDA is available and set the device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")</code></pre>
+    <p>We set a random seed to ensure that our results are reproducible. This means that every time we run the code, we will get the same results. This is important for debugging and comparing different models.</p>
     <p>If you are using an Apple silicon device, you can check for MPS availability:</p>
     <pre><code># Check if MPS is available and set the device
 device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
 print(f"Using device: {device}")</code></pre>
+    <p>Setting the device to CUDA or MPS allows us to leverage the power of GPUs for faster computations. If neither is available, we fall back to using the CPU.</p>
 
     <h2>1. Introduction to PyTorch and Tensors</h2>
-    <p>PyTorch is a powerful library for machine learning, especially deep learning. It's like a toolbox full of useful tools for building and training neural networks.</p>
-    <p>The most basic building block in PyTorch is called a <strong>tensor</strong>. You can think of a tensor as a container for numbers, similar to a list or an array in other programming languages. The cool thing about tensors is that they can have multiple dimensions, making them perfect for representing complex data like images or text.</p>
+    <p>PyTorch is a powerful library for machine learning, especially deep learning. It's like a toolbox full of useful tools for building and training neural networks. PyTorch is widely used in both academia and industry due to its flexibility and ease of use.</p>
+    <p>The most basic building block in PyTorch is called a <strong>tensor</strong>. You can think of a tensor as a container for numbers, similar to a list or an array in other programming languages. The cool thing about tensors is that they can have multiple dimensions, making them perfect for representing complex data like images or text. Tensors are also optimized for GPU acceleration, which makes them very efficient for large-scale computations.</p>
     
     <h3>Creating Tensors</h3>
     <pre><code>import torch
@@ -81,7 +83,7 @@ matrix = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 # Create a 3D tensor
 tensor_3d = torch.tensor([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])</code></pre>
     
-    <p>In this example, we create tensors of different dimensions. The 1D tensor is like a list, the 2D tensor is like a table or matrix, and the 3D tensor is like a stack of 2D matrices.</p>
+    <p>In this example, we create tensors of different dimensions. The 1D tensor is like a list, the 2D tensor is like a table or matrix, and the 3D tensor is like a stack of 2D matrices. Understanding these different dimensions is crucial because neural networks often work with high-dimensional data, such as images (which can be represented as 3D tensors) or batches of data (which can be represented as 4D tensors).</p>
     
     <div class="note">
         <p><strong>Intuition:</strong> Think of tensors as flexible containers that can hold numbers in various shapes. A 1D tensor is like a line of numbers, a 2D tensor is like a grid of numbers, and a 3D tensor is like a cube of numbers.</p>
@@ -108,7 +110,7 @@ m1 = torch.tensor([[1, 2], [3, 4]])
 m2 = torch.tensor([[5, 6], [7, 8]])
 m3 = torch.matmul(m1, m2)  # Result: tensor([[19, 22], [43, 50]])</code></pre>
     
-    <p>These operations allow us to manipulate tensors in various ways, which is crucial for building and training neural networks.</p>
+    <p>These operations allow us to manipulate tensors in various ways, which is crucial for building and training neural networks. For example, matrix multiplication is a fundamental operation in neural networks, as it is used in the forward pass to compute the activations of neurons. Understanding these operations will help you implement and debug neural network models more effectively.</p>
     
     <div class="note">
         <p><strong>Intuition:</strong> Think of tensor operations as ways to combine or transform the numbers inside tensors. Addition is like combining two sets of numbers, while matrix multiplication is a more complex way of combining numbers that's especially useful in neural networks.</p>
@@ -126,14 +128,14 @@ m3 = torch.matmul(m1, m2)  # Result: tensor([[19, 22], [43, 50]])</code></pre>
     <pre><code>import torch.nn as nn
 
 linear = nn.Linear(in_features=10, out_features=5)</code></pre>
-    <p>This creates a linear layer that takes 10 input features and produces 5 output features.</p>
+    <p>This creates a linear layer that takes 10 input features and produces 5 output features. Linear layers are the building blocks of neural networks. They apply a linear transformation to the input data, which is essentially a weighted sum of the input features. This transformation allows the network to learn relationships between the input features and the target output.</p>
     
     <h3>Activation Functions</h3>
     <p>Activation functions introduce non-linearity into the network, allowing it to learn complex patterns.</p>
     <pre><code>relu = nn.ReLU()
 sigmoid = nn.Sigmoid()
 tanh = nn.Tanh()</code></pre>
-    <p>These are different types of activation functions, each with its own characteristics:</p>
+    <p>These are different types of activation functions, each with its own characteristics. Activation functions introduce non-linearity into the network, which allows it to learn complex patterns in the data. Without activation functions, the network would only be able to learn linear relationships, which are not sufficient for most real-world tasks.</p>
     <ul>
         <li>ReLU (Rectified Linear Unit): Returns 0 for negative inputs, and the input itself for positive inputs.</li>
         <li>Sigmoid: Squashes inputs to a range between 0 and 1.</li>
@@ -147,7 +149,7 @@ tanh = nn.Tanh()</code></pre>
     <h3>Dropout</h3>
     <p>Dropout is a regularization technique that helps prevent overfitting by randomly "dropping out" (setting to zero) a proportion of neurons during training.</p>
     <pre><code>dropout = nn.Dropout(p=0.5)</code></pre>
-    <p>This creates a dropout layer that will randomly zero out 50% of the inputs during training.</p>
+    <p>This creates a dropout layer that will randomly zero out 50% of the inputs during training. Dropout is a regularization technique that helps prevent overfitting by ensuring that the network does not rely too heavily on any single neuron. By randomly dropping out neurons during training, dropout forces the network to learn more robust features that generalize better to new data.</p>
     
     <div class="warning">
         <p><strong>Common Question:</strong> "Why do we need dropout?" Dropout helps the network learn more robust features by preventing it from relying too heavily on any particular neuron.</p>
@@ -156,7 +158,7 @@ tanh = nn.Tanh()</code></pre>
     <h3>Batch Normalization</h3>
     <p>Batch normalization normalizes the inputs to a layer for each mini-batch, which can help the network train faster and more stably.</p>
     <pre><code>batch_norm = nn.BatchNorm1d(10)</code></pre>
-    <p>This creates a batch normalization layer for inputs with 10 features.</p>
+    <p>This creates a batch normalization layer for inputs with 10 features. Batch normalization normalizes the inputs to a layer for each mini-batch, which can help the network train faster and more stably. By normalizing the inputs, batch normalization reduces the internal covariate shift, which is the change in the distribution of layer inputs during training. This allows for higher learning rates and can lead to faster convergence.</p>
     
     <h2>4. Creating a Multi-Layer Perceptron (MLP)</h2>
     <p>Now that we understand the building blocks, let's put them together to create an MLP!</p>
@@ -185,7 +187,7 @@ tanh = nn.Tanh()</code></pre>
 # Create an instance of the MLP
 mlp = MLP(input_size=10, hidden_sizes=[64, 32], output_size=1)</code></pre>
     
-    <p>This code defines an MLP with an input size of 10, two hidden layers with 64 and 32 neurons respectively, and an output size of 1.</p>
+    <p>This code defines an MLP with an input size of 10, two hidden layers with 64 and 32 neurons respectively, and an output size of 1. The hidden layers use ReLU activation functions to introduce non-linearity, which allows the network to learn complex patterns in the data. The output layer does not use an activation function, as it is typically used for regression tasks or binary classification (with a subsequent sigmoid activation).</p>
     
     <div class="note">
         <p><strong>Intuition:</strong> Think of an MLP as a series of transformations. Each layer takes some input, transforms it, and passes it to the next layer. The final layer produces the output.</p>
@@ -210,7 +212,7 @@ X_train, y_train = X_train.to(device), y_train.to(device)
 X_test, y_test = X_test.to(device), y_test.to(device)</code></pre>
 
     <h2>5. Training an MLP</h2>
-    <p>Training an MLP involves feeding it data, comparing its predictions to the true values, and adjusting its parameters to improve its predictions. This process is called backpropagation.</p>
+    <p>Training an MLP involves feeding it data, comparing its predictions to the true values, and adjusting its parameters to improve its predictions. This process is called backpropagation. During backpropagation, the network computes the gradients of the loss with respect to its parameters and updates the parameters using an optimization algorithm. This iterative process continues until the network's performance on the training data improves.</p>
     
     <h3>Key Components of Training</h3>
     <ul>
@@ -219,23 +221,30 @@ X_test, y_test = X_test.to(device), y_test.to(device)</code></pre>
         <li><strong>Training Loop:</strong> Repeatedly feeds data through the model, computes the loss, and updates the parameters.</li>
     </ul>
     
-    <pre><code>import torch.optim as optim
-
-# Define loss function and optimizer
-criterion = nn.MSELoss()
+    <pre><code># Define loss function and optimizer
+criterion = nn.BCEWithLogitsLoss()
 optimizer = optim.Adam(mlp.parameters(), lr=0.001)
 
 # Training loop
+num_epochs = 50
 for epoch in range(num_epochs):
+    mlp.train()
     for batch_X, batch_y in train_loader:
-        # Forward pass
+        optimizer.zero_grad()
         outputs = mlp(batch_X)
         loss = criterion(outputs, batch_y)
-        
-        # Backward pass and optimize
-        optimizer.zero_grad()
         loss.backward()
-        optimizer.step()</code></pre>
+        optimizer.step()
+    
+    # Evaluate on the test set
+    if (epoch + 1) % 10 == 0:
+        mlp.eval()
+        with torch.no_grad():
+            test_outputs = mlp(X_test)
+            test_loss = criterion(test_outputs, y_test)
+            accuracy = ((test_outputs > 0) == y_test).float().mean()
+        print(f"Epoch {epoch+1}/{num_epochs}, Test Loss: {test_loss:.4f}, Accuracy: {accuracy:.4f}")</code></pre>
+    <p>In this training loop, we use the Binary Cross-Entropy with Logits Loss (BCEWithLogitsLoss) as the loss function, which is suitable for binary classification tasks. The Adam optimizer is used to update the model's parameters. During each epoch, we perform a forward pass to compute the model's predictions, a backward pass to compute the gradients, and an optimization step to update the parameters. We also evaluate the model on the test set every 10 epochs to monitor its performance.</p>
     
     <div class="note">
         <p><strong>Intuition:</strong> Think of training as teaching the network. You show it examples (data), see how well it does (loss), and then give it feedback on how to improve (backpropagation).</p>
@@ -246,23 +255,27 @@ for epoch in range(num_epochs):
     </div>
     
     <h2>6. Evaluating and Using the Trained MLP</h2>
-    <p>After training, we need to evaluate how well our model performs on new, unseen data.</p>
+    <p>After training, we need to evaluate how well our model performs on new, unseen data. This step is crucial because it allows us to assess the model's generalization ability, which is its performance on data it has never seen before. A model that performs well on the training data but poorly on new data is likely overfitting, meaning it has learned to memorize the training data rather than generalize from it.</p>
     
-    <pre><code># Evaluation
-mlp.eval()  # Set the model to evaluation mode
-with torch.no_grad():  # Disable gradient calculation
+    <pre><code># Evaluate on the test set
+mlp.eval()
+with torch.no_grad():
     test_outputs = mlp(X_test)
     test_loss = criterion(test_outputs, y_test)
-    # For binary classification, we consider outputs > 0.5 as positive predictions
-    predicted_labels = (test_outputs > 0.5).float()
-    accuracy = (predicted_labels == y_test).float().mean()
-
-print(f"Test Loss: {test_loss:.4f}, Accuracy: {accuracy:.4f}")
+    accuracy = ((test_outputs > 0) == y_test).float().mean()
+    
+print(f"Final Test Loss: {test_loss:.4f}, Accuracy: {accuracy:.4f}")
 
 # Make predictions on new data
-new_data = torch.randn(5, input_size)  # Create 5 random input samples
-predictions = mlp(new_data)  # Get model predictions for the new data
-print("Predictions for new data:", predictions)</code></pre>
+new_data = torch.randn(5, input_size).to(device)
+with torch.no_grad():
+    predictions = mlp(new_data)
+    binary_predictions = (predictions > 0).float()
+
+print("\nPredictions on new data:")
+for i, (pred, binary_pred) in enumerate(zip(predictions, binary_predictions)):
+    print(f"Sample {i+1}: Raw prediction = {pred.item():.4f}, Binary prediction = {binary_pred.item():.0f}")</code></pre>
+    <p>In the evaluation phase, we set the model to evaluation mode using <code>mlp.eval()</code> and disable gradient calculation with <code>torch.no_grad()</code>. This ensures that the model's parameters are not updated during evaluation. We then compute the test loss and accuracy to assess the model's performance. Finally, we make predictions on new data to see how the model generalizes to unseen inputs.</p>
     
     <div class="note">
         <p><strong>Intuition:</strong> Evaluation is like giving your trained model a final exam. You test it on data it hasn't seen before to see how well it has learned to generalize.</p>
@@ -273,7 +286,7 @@ print("Predictions for new data:", predictions)</code></pre>
     </div>
     
     <h2>Advanced Topics and Best Practices</h2>
-    <p>Here are some advanced topics and best practices to consider when working with MLPs in PyTorch:</p>
+    <p>Here are some advanced topics and best practices to consider when working with MLPs in PyTorch. These techniques can help you improve the performance and robustness of your models:</p>
     <ul>
         <li><strong>Hyperparameter Tuning:</strong> Use techniques like grid search, random search, or Bayesian optimization to find the best hyperparameters (e.g., learning rate, network architecture, dropout rate).</li>
         <li><strong>Regularization:</strong> Implement L1/L2 regularization to prevent overfitting:
@@ -331,7 +344,7 @@ mlp.apply(init_weights)</code></pre>
     </ul>
 
     <h2>Conclusion</h2>
-    <p>We've covered the basics of PyTorch and Multi-Layer Perceptrons, from tensors and basic operations to building, training, and evaluating a neural network. Remember, practice is key to mastering these concepts. Don't be afraid to experiment and make mistakes - that's how you learn!</p>
+    <p>We've covered the basics of PyTorch and Multi-Layer Perceptrons, from tensors and basic operations to building, training, and evaluating a neural network. Remember, practice is key to mastering these concepts. Don't be afraid to experiment and make mistakes - that's how you learn! By understanding the underlying principles and applying best practices, you can build powerful and efficient neural networks for a wide range of tasks.</p>
     
     <p>Happy coding and machine learning!</p>
 </body>
