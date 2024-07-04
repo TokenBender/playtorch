@@ -44,6 +44,27 @@
 <body>
     <h1>PyTorch Basics and Multi-Layer Perceptrons (MLPs) Explained</h1>
     
+    <h2>Setup</h2>
+    <p>First, let's import the necessary libraries and set up our environment.</p>
+    <pre><code>import torch
+import torch.nn as nn
+import torch.optim as optim
+import torch.nn.functional as F
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Set random seed for reproducibility
+torch.manual_seed(42)
+np.random.seed(42)
+
+# Check if CUDA is available and set the device
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"Using device: {device}")</code></pre>
+    <p>If you are using an Apple silicon device, you can check for MPS availability:</p>
+    <pre><code># Check if MPS is available and set the device
+device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+print(f"Using device: {device}")</code></pre>
+
     <h2>1. Introduction to PyTorch and Tensors</h2>
     <p>PyTorch is a powerful library for machine learning, especially deep learning. It's like a toolbox full of useful tools for building and training neural networks.</p>
     <p>The most basic building block in PyTorch is called a <strong>tensor</strong>. You can think of a tensor as a container for numbers, similar to a list or an array in other programming languages. The cool thing about tensors is that they can have multiple dimensions, making them perfect for representing complex data like images or text.</p>
@@ -174,6 +195,20 @@ mlp = MLP(input_size=10, hidden_sizes=[64, 32], output_size=1)</code></pre>
         <p><strong>Common Mistake:</strong> Beginners often forget to apply activation functions between linear layers. Without these non-linearities, the entire network would just be one big linear transformation!</p>
     </div>
     
+    <h2>Generate a Simple Dataset</h2>
+    <p>Before training the MLP, we need to generate a simple dataset. This dataset will be used to train and evaluate the model.</p>
+    <pre><code>def generate_data(num_samples=1000):
+    X = torch.randn(num_samples, input_size)
+    y = (X.sum(dim=1) > 0).float().view(-1, 1)
+    return X, y
+
+X_train, y_train = generate_data()
+X_test, y_test = generate_data(200)
+
+# Move data to the appropriate device
+X_train, y_train = X_train.to(device), y_train.to(device)
+X_test, y_test = X_test.to(device), y_test.to(device)</code></pre>
+
     <h2>5. Training an MLP</h2>
     <p>Training an MLP involves feeding it data, comparing its predictions to the true values, and adjusting its parameters to improve its predictions. This process is called backpropagation.</p>
     
@@ -237,6 +272,64 @@ print("Predictions for new data:", predictions)</code></pre>
         <p><strong>Common Mistake:</strong> Forgetting to set the model to evaluation mode (model.eval()). This can lead to incorrect results, especially if you're using layers like Dropout or BatchNorm.</p>
     </div>
     
+    <h2>Advanced Topics and Best Practices</h2>
+    <p>Here are some advanced topics and best practices to consider when working with MLPs in PyTorch:</p>
+    <ul>
+        <li><strong>Hyperparameter Tuning:</strong> Use techniques like grid search, random search, or Bayesian optimization to find the best hyperparameters (e.g., learning rate, network architecture, dropout rate).</li>
+        <li><strong>Regularization:</strong> Implement L1/L2 regularization to prevent overfitting:
+            <pre><code>optimizer = optim.Adam(mlp.parameters(), lr=0.001, weight_decay=1e-5)  # L2 regularization</code></pre>
+        </li>
+        <li><strong>Learning Rate Scheduling:</strong> Implement learning rate decay to improve convergence:
+            <pre><code>scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)</code></pre>
+        </li>
+        <li><strong>Early Stopping:</strong> Implement early stopping to prevent overfitting:
+            <pre><code>best_loss = float('inf')
+patience = 10
+counter = 0
+
+for epoch in range(num_epochs):
+    # ... training code ...
+    
+    if val_loss < best_loss:
+        best_loss = val_loss
+        counter = 0
+    else:
+        counter += 1
+        if counter >= patience:
+            print(f"Early stopping at epoch {epoch}")
+            break</code></pre>
+        </li>
+        <li><strong>Model Saving and Loading:</strong> Save and load your trained models:
+            <pre><code># Saving
+torch.save(mlp.state_dict(), 'mlp_model.pth')
+
+# Loading
+mlp = MLP(input_size, hidden_sizes, output_size)
+mlp.load_state_dict(torch.load('mlp_model.pth'))
+mlp.eval()</code></pre>
+        </li>
+        <li><strong>Data Augmentation:</strong> For image data, consider using data augmentation techniques:
+            <pre><code>transform = transforms.Compose([
+    transforms.RandomHorizontalFlip(),
+    transforms.RandomRotation(10),
+    transforms.ToTensor(),
+])</code></pre>
+        </li>
+        <li><strong>Transfer Learning:</strong> For complex tasks, consider using pre-trained models and fine-tuning them for your specific task.</li>
+        <li><strong>Gradient Clipping:</strong> Implement gradient clipping to prevent exploding gradients:
+            <pre><code>torch.nn.utils.clip_grad_norm_(mlp.parameters(), max_norm=1.0)</code></pre>
+        </li>
+        <li><strong>Proper Initialization:</strong> Use appropriate weight initialization techniques:
+            <pre><code>def init_weights(m):
+    if type(m) == nn.Linear:
+        torch.nn.init.xavier_uniform_(m.weight)
+        m.bias.data.fill_(0.01)
+
+mlp.apply(init_weights)</code></pre>
+        </li>
+        <li><strong>Monitoring and Visualization:</strong> Use tools like TensorBoard or Weight & Biases to monitor and visualize your training process.</li>
+    </ul>
+
     <h2>Conclusion</h2>
     <p>We've covered the basics of PyTorch and Multi-Layer Perceptrons, from tensors and basic operations to building, training, and evaluating a neural network. Remember, practice is key to mastering these concepts. Don't be afraid to experiment and make mistakes - that's how you learn!</p>
     
