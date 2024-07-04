@@ -198,7 +198,7 @@ mlp = MLP(input_size=10, hidden_sizes=[64, 32], output_size=1)</code></pre>
     </div>
     
     <h2>Generate a Simple Dataset</h2>
-    <p>Before training the MLP, we need to generate a simple dataset. This dataset will be used to train and evaluate the model.</p>
+    <p>Before training the MLP, we need to generate a simple dataset. This dataset will be used to train and evaluate the model. For this example, we will create a synthetic dataset where the input features are randomly generated, and the target labels are binary values indicating whether the sum of the input features is greater than zero.</p>
     <pre><code>def generate_data(num_samples=1000):
     X = torch.randn(num_samples, input_size)
     y = (X.sum(dim=1) > 0).float().view(-1, 1)
@@ -210,6 +210,8 @@ X_test, y_test = generate_data(200)
 # Move data to the appropriate device
 X_train, y_train = X_train.to(device), y_train.to(device)
 X_test, y_test = X_test.to(device), y_test.to(device)</code></pre>
+    <p>In this code, <code>generate_data</code> creates a dataset with a specified number of samples. Each sample consists of <code>input_size</code> features drawn from a standard normal distribution. The target label <code>y</code> is 1 if the sum of the input features is greater than zero, and 0 otherwise. This simple rule allows us to create a binary classification task.</p>
+    <p>We generate separate training and test datasets to evaluate the model's performance on unseen data. The training dataset contains 1000 samples, while the test dataset contains 200 samples. We also move the data to the appropriate device (CPU, CUDA, or MPS) for efficient computation.</p>
 
     <h2>5. Training an MLP</h2>
     <p>Training an MLP involves feeding it data, comparing its predictions to the true values, and adjusting its parameters to improve its predictions. This process is called backpropagation. During backpropagation, the network computes the gradients of the loss with respect to its parameters and updates the parameters using an optimization algorithm. This iterative process continues until the network's performance on the training data improves.</p>
