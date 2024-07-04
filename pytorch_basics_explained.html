@@ -46,41 +46,47 @@
     
     <h2>Setup</h2>
     <p>First, let's import the necessary libraries and set up our environment. We will use PyTorch for building and training neural networks, NumPy for numerical operations, and Matplotlib for plotting.</p>
-    <pre><code># Import the PyTorch library
+    <pre><code># Import the PyTorch library, which is the main library we'll be using for deep learning
 import torch
 
-# Import the neural network module from PyTorch
+# Import the neural network module from PyTorch, which provides building blocks for creating neural networks
 import torch.nn as nn
 
-# Import the optimization module from PyTorch
+# Import the optimization module from PyTorch, which contains various optimization algorithms
 import torch.optim as optim
 
-# Import the functional module from PyTorch for various functions
+# Import the functional module from PyTorch, which contains various functions for neural networks
 import torch.nn.functional as F
 
-# Import the NumPy library for numerical operations
+# Import the NumPy library for numerical operations (we might use this for data manipulation)
 import numpy as np
 
-# Import the Matplotlib library for plotting
+# Import the Matplotlib library for plotting (we'll use this to visualize our results)
 import matplotlib.pyplot as plt
 
 # Set a random seed for PyTorch to ensure reproducibility
+# This means that random operations will give the same results each time we run the code
 torch.manual_seed(42)
 
 # Set a random seed for NumPy to ensure reproducibility
+# This is similar to the PyTorch seed, but for NumPy operations
 np.random.seed(42)
 
 # Check if CUDA (GPU support) is available and set the device accordingly
+# This line creates a 'device' object that we'll use to tell PyTorch where to run our computations
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Print the device being used (CPU or GPU)
+# This helps us confirm whether we're using GPU acceleration or not
 print(f"Using device: {device}")</code></pre>
     <p>We set a random seed to ensure that our results are reproducible. This means that every time we run the code, we will get the same results. This is important for debugging and comparing different models.</p>
     <p>If you are using an Apple silicon device, you can check for MPS availability:</p>
-    <pre><code># Check if MPS (Apple's GPU support) is available and set the device accordingly
+    <pre><code># Check if MPS (Apple's Metal Performance Shaders, for GPU support on Mac) is available
+# If it's available, we'll use it; otherwise, we'll use the CPU
 device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
 
 # Print the device being used (CPU or MPS)
+# This helps us confirm whether we're using GPU acceleration on a Mac or not
 print(f"Using device: {device}")</code></pre>
     <p>Setting the device to CUDA or MPS allows us to leverage the power of GPUs for faster computations. If neither is available, we fall back to using the CPU.</p>
 
@@ -89,17 +95,30 @@ print(f"Using device: {device}")</code></pre>
     <p>The most basic building block in PyTorch is called a <strong>tensor</strong>. You can think of a tensor as a container for numbers, similar to a list or an array in other programming languages. The cool thing about tensors is that they can have multiple dimensions, making them perfect for representing complex data like images or text. Tensors are also optimized for GPU acceleration, which makes them very efficient for large-scale computations.</p>
     
     <h3>Creating Tensors</h3>
-    <pre><code># Import the PyTorch library
+    <pre><code># Import the PyTorch library, which we'll use to create and manipulate tensors
 import torch
 
 # Create a 1D tensor (vector) with values [1, 2, 3, 4, 5]
+# A 1D tensor is like a list of numbers
 vector = torch.tensor([1, 2, 3, 4, 5])
 
 # Create a 2D tensor (matrix) with values [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+# A 2D tensor is like a table of numbers with rows and columns
 matrix = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 
 # Create a 3D tensor with values [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
-tensor_3d = torch.tensor([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])</code></pre>
+# A 3D tensor is like a cube of numbers, or a stack of 2D matrices
+tensor_3d = torch.tensor([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
+
+# We can print these tensors to see their contents:
+print("1D tensor (vector):", vector)
+print("2D tensor (matrix):", matrix)
+print("3D tensor:", tensor_3d)
+
+# We can also check the shape (dimensions) of each tensor:
+print("Vector shape:", vector.shape)
+print("Matrix shape:", matrix.shape)
+print("3D tensor shape:", tensor_3d.shape)</code></pre>
     
     <p>In this example, we create tensors of different dimensions. The 1D tensor is like a list, the 2D tensor is like a table or matrix, and the 3D tensor is like a stack of 2D matrices. Understanding these different dimensions is crucial because neural networks often work with high-dimensional data, such as images (which can be represented as 3D tensors) or batches of data (which can be represented as 4D tensors).</p>
     
@@ -115,26 +134,43 @@ tensor_3d = torch.tensor([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])</code></pre>
     <p>Tensors aren't just for storing numbers; we can perform various operations on them. These operations are the building blocks of neural network computations.</p>
     
     <h3>Basic Operations</h3>
-    <pre><code># Create a 1D tensor with values [1, 2, 3]
+    <pre><code># Create a 1D tensor 'a' with values [1, 2, 3]
 a = torch.tensor([1, 2, 3])
 
-# Create another 1D tensor with values [4, 5, 6]
+# Create another 1D tensor 'b' with values [4, 5, 6]
 b = torch.tensor([4, 5, 6])
 
 # Perform element-wise addition of tensors a and b
+# This adds corresponding elements: [1+4, 2+5, 3+6]
 c = a + b  # Result: tensor([5, 7, 9])
+print("Element-wise addition:", c)
 
 # Perform element-wise multiplication of tensors a and b
+# This multiplies corresponding elements: [1*4, 2*5, 3*6]
 d = a * b  # Result: tensor([4, 10, 18])
+print("Element-wise multiplication:", d)
 
-# Create a 2D tensor (matrix) with values [[1, 2], [3, 4]]
+# Create a 2D tensor (matrix) 'm1' with values [[1, 2], [3, 4]]
 m1 = torch.tensor([[1, 2], [3, 4]])
 
-# Create another 2D tensor (matrix) with values [[5, 6], [7, 8]]
+# Create another 2D tensor (matrix) 'm2' with values [[5, 6], [7, 8]]
 m2 = torch.tensor([[5, 6], [7, 8]])
 
 # Perform matrix multiplication of tensors m1 and m2
-m3 = torch.matmul(m1, m2)  # Result: tensor([[19, 22], [43, 50]])</code></pre>
+# This is different from element-wise multiplication!
+m3 = torch.matmul(m1, m2)  # Result: tensor([[19, 22], [43, 50]])
+print("Matrix multiplication:", m3)
+
+# Let's break down the matrix multiplication:
+# [1 2] * [5 6] = 1*5 + 2*7 = 19  |  1*6 + 2*8 = 22
+# [3 4]   [7 8]   3*5 + 4*7 = 43  |  3*6 + 4*8 = 50
+
+# We can also use the '@' operator for matrix multiplication:
+m4 = m1 @ m2
+print("Matrix multiplication using @:", m4)
+
+# Verify that m3 and m4 are the same
+print("Are m3 and m4 equal?", torch.all(m3 == m4))</code></pre>
     
     <p>These operations allow us to manipulate tensors in various ways, which is crucial for building and training neural networks. For example, matrix multiplication is a fundamental operation in neural networks, as it is used in the forward pass to compute the activations of neurons. Understanding these operations will help you implement and debug neural network models more effectively.</p>
     
@@ -155,7 +191,23 @@ m3 = torch.matmul(m1, m2)  # Result: tensor([[19, 22], [43, 50]])</code></pre>
 import torch.nn as nn
 
 # Create a linear layer that takes 10 input features and produces 5 output features
-linear = nn.Linear(in_features=10, out_features=5)</code></pre>
+linear = nn.Linear(in_features=10, out_features=5)
+
+# A linear layer performs the operation: y = xW^T + b
+# Where x is the input, W is the weight matrix, and b is the bias vector
+
+# We can inspect the parameters of our linear layer:
+print("Weight matrix shape:", linear.weight.shape)  # Should be (5, 10)
+print("Bias vector shape:", linear.bias.shape)      # Should be (5,)
+
+# Let's create a sample input and pass it through our linear layer
+sample_input = torch.randn(3, 10)  # 3 samples, each with 10 features
+output = linear(sample_input)
+
+print("Input shape:", sample_input.shape)
+print("Output shape:", output.shape)  # Should be (3, 5)
+
+# The output has 5 features for each of our 3 input samples</code></pre>
     <p>This creates a linear layer that takes 10 input features and produces 5 output features. Linear layers are the building blocks of neural networks. They apply a linear transformation to the input data, which is essentially a weighted sum of the input features. This transformation allows the network to learn relationships between the input features and the target output.</p>
     
     <h3>Activation Functions</h3>
@@ -167,7 +219,49 @@ relu = nn.ReLU()
 sigmoid = nn.Sigmoid()
 
 # Create a Tanh (Hyperbolic Tangent) activation function
-tanh = nn.Tanh()</code></pre>
+tanh = nn.Tanh()
+
+# Let's create a sample input to test these activation functions
+sample_input = torch.tensor([-2, -1, 0, 1, 2])
+
+# Apply ReLU activation
+relu_output = relu(sample_input)
+print("ReLU output:", relu_output)
+# ReLU replaces negative values with 0, and keeps positive values as they are
+
+# Apply Sigmoid activation
+sigmoid_output = sigmoid(sample_input)
+print("Sigmoid output:", sigmoid_output)
+# Sigmoid squashes values to the range (0, 1)
+
+# Apply Tanh activation
+tanh_output = tanh(sample_input)
+print("Tanh output:", tanh_output)
+# Tanh squashes values to the range (-1, 1)
+
+# Let's visualize these activation functions
+import matplotlib.pyplot as plt
+
+x = torch.linspace(-5, 5, 100)
+plt.figure(figsize=(12, 4))
+
+plt.subplot(131)
+plt.plot(x, relu(x))
+plt.title('ReLU')
+plt.grid(True)
+
+plt.subplot(132)
+plt.plot(x, sigmoid(x))
+plt.title('Sigmoid')
+plt.grid(True)
+
+plt.subplot(133)
+plt.plot(x, tanh(x))
+plt.title('Tanh')
+plt.grid(True)
+
+plt.tight_layout()
+plt.show()</code></pre>
     <p>These are different types of activation functions, each with its own characteristics. Activation functions introduce non-linearity into the network, which allows it to learn complex patterns in the data. Without activation functions, the network would only be able to learn linear relationships, which are not sufficient for most real-world tasks.</p>
     <ul>
         <li>ReLU (Rectified Linear Unit): Returns 0 for negative inputs, and the input itself for positive inputs.</li>
@@ -182,7 +276,32 @@ tanh = nn.Tanh()</code></pre>
     <h3>Dropout</h3>
     <p>Dropout is a regularization technique that helps prevent overfitting by randomly "dropping out" (setting to zero) a proportion of neurons during training.</p>
     <pre><code># Create a Dropout layer with a dropout probability of 0.5 (50%)
-dropout = nn.Dropout(p=0.5)</code></pre>
+dropout = nn.Dropout(p=0.5)
+
+# Dropout is a regularization technique to prevent overfitting
+# During training, it randomly sets a fraction of input units to 0 at each update
+
+# Let's create a sample input to demonstrate dropout
+sample_input = torch.ones(10, 10)  # 10x10 tensor of ones
+
+# Apply dropout during training
+dropout.train()  # Set the layer to training mode
+train_output = dropout(sample_input)
+print("Output during training (with dropout):")
+print(train_output)
+
+# Notice that approximately half of the elements are zero
+
+# During evaluation, dropout behaves differently
+dropout.eval()  # Set the layer to evaluation mode
+eval_output = dropout(sample_input)
+print("\nOutput during evaluation (without dropout):")
+print(eval_output)
+
+# During evaluation, all elements remain unchanged
+
+# It's important to set your model to train() mode during training
+# and eval() mode during evaluation to ensure proper behavior of dropout</code></pre>
     <p>This creates a dropout layer that will randomly zero out 50% of the inputs during training. Dropout is a regularization technique that helps prevent overfitting by ensuring that the network does not rely too heavily on any single neuron. By randomly dropping out neurons during training, dropout forces the network to learn more robust features that generalize better to new data.</p>
     
     <div class="warning">
@@ -192,7 +311,33 @@ dropout = nn.Dropout(p=0.5)</code></pre>
     <h3>Batch Normalization</h3>
     <p>Batch normalization normalizes the inputs to a layer for each mini-batch, which can help the network train faster and more stably.</p>
     <pre><code># Create a Batch Normalization layer for inputs with 10 features
-batch_norm = nn.BatchNorm1d(10)</code></pre>
+batch_norm = nn.BatchNorm1d(10)
+
+# Batch Normalization normalizes the input to have zero mean and unit variance
+# It helps in faster convergence and allows higher learning rates
+
+# Let's create a sample batch of data to demonstrate batch normalization
+sample_batch = torch.randn(32, 10)  # 32 samples, each with 10 features
+
+# Apply batch normalization
+normalized_batch = batch_norm(sample_batch)
+
+print("Original batch mean:", sample_batch.mean(dim=0))
+print("Original batch std:", sample_batch.std(dim=0))
+
+print("\nNormalized batch mean:", normalized_batch.mean(dim=0))
+print("Normalized batch std:", normalized_batch.std(dim=0))
+
+# Notice that the normalized batch has mean close to 0 and std close to 1 for each feature
+
+# Batch Normalization also has learnable parameters: weight and bias
+print("\nBatch Norm weight:", batch_norm.weight)
+print("Batch Norm bias:", batch_norm.bias)
+
+# These parameters allow the layer to learn the optimal scale and shift for each feature
+
+# Like dropout, batch normalization behaves differently during training and evaluation
+# Make sure to set your model to train() mode during training and eval() mode during evaluation</code></pre>
     <p>This creates a batch normalization layer for inputs with 10 features. Batch normalization normalizes the inputs to a layer for each mini-batch, which can help the network train faster and more stably. By normalizing the inputs, batch normalization reduces the internal covariate shift, which is the change in the distribution of layer inputs during training. This allows for higher learning rates and can lead to faster convergence.</p>
     
     <h2>4. Creating a Multi-Layer Perceptron (MLP)</h2>
@@ -226,7 +371,30 @@ class MLP(nn.Module):
         return x
 
 # Create an instance of the MLP with input size 10, hidden layer sizes [64, 32], and output size 1
-mlp = MLP(input_size=10, hidden_sizes=[64, 32], output_size=1)</code></pre>
+mlp = MLP(input_size=10, hidden_sizes=[64, 32], output_size=1)
+
+# Let's break down what's happening in this MLP:
+
+print("MLP Structure:")
+for i, layer in enumerate(mlp.layers):
+    print(f"Layer {i}: {layer}")
+
+# The MLP has the following structure:
+# 1. Linear layer: 10 -> 64
+# 2. ReLU activation
+# 3. Linear layer: 64 -> 32
+# 4. ReLU activation
+# 5. Linear layer: 32 -> 1 (output layer)
+
+# Let's create a sample input and pass it through our MLP
+sample_input = torch.randn(5, 10)  # 5 samples, each with 10 features
+output = mlp(sample_input)
+
+print("\nInput shape:", sample_input.shape)
+print("Output shape:", output.shape)
+
+# The output has 1 feature for each of our 5 input samples
+# This MLP could be used for a regression task or binary classification (with a subsequent sigmoid activation)</code></pre>
     
     <p>This code defines an MLP with an input size of 10, two hidden layers with 64 and 32 neurons respectively, and an output size of 1. The hidden layers use ReLU activation functions to introduce non-linearity, which allows the network to learn complex patterns in the data. The output layer does not use an activation function, as it is typically used for regression tasks or binary classification (with a subsequent sigmoid activation).</p>
     
@@ -258,7 +426,37 @@ X_test, y_test = generate_data(200)
 X_train, y_train = X_train.to(device), y_train.to(device)
 
 # Move the test data to the appropriate device (CPU, CUDA, or MPS)
-X_test, y_test = X_test.to(device), y_test.to(device)</code></pre>
+X_test, y_test = X_test.to(device), y_test.to(device)
+
+# Let's examine our generated data
+print("Training data:")
+print("X_train shape:", X_train.shape)
+print("y_train shape:", y_train.shape)
+print("\nTest data:")
+print("X_test shape:", X_test.shape)
+print("y_test shape:", y_test.shape)
+
+# Let's look at a few samples
+print("\nFirst 5 samples of X_train:")
+print(X_train[:5])
+print("\nFirst 5 labels of y_train:")
+print(y_train[:5])
+
+# We can visualize the distribution of our target variable
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(10, 5))
+plt.subplot(121)
+plt.hist(y_train.cpu().numpy(), bins=2)
+plt.title('Distribution of y_train')
+plt.subplot(122)
+plt.hist(y_test.cpu().numpy(), bins=2)
+plt.title('Distribution of y_test')
+plt.tight_layout()
+plt.show()
+
+# This synthetic dataset creates a binary classification problem
+# The task is to predict whether the sum of input features is positive or negative</code></pre>
     <p>In this code, <code>generate_data</code> creates a dataset with a specified number of samples. Each sample consists of <code>input_size</code> features drawn from a standard normal distribution. The target label <code>y</code> is 1 if the sum of the input features is greater than zero, and 0 otherwise. This simple rule allows us to create a binary classification task.</p>
     <p>We generate separate training and test datasets to evaluate the model's performance on unseen data. The training dataset contains 1000 samples, while the test dataset contains 200 samples. We also move the data to the appropriate device (CPU, CUDA, or MPS) for efficient computation.</p>
 
@@ -281,37 +479,84 @@ optimizer = optim.Adam(mlp.parameters(), lr=0.001)
 # Set the number of epochs (iterations over the entire dataset) for training
 num_epochs = 50
 
+# Define batch size
+batch_size = 32
+
+# Create DataLoader for batching
+train_dataset = torch.utils.data.TensorDataset(X_train, y_train)
+train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+
 # Training loop
 for epoch in range(num_epochs):
     # Set the model to training mode
     mlp.train()
+    
+    # Initialize variables to track training loss and accuracy
+    train_loss = 0.0
+    train_correct = 0
+    
     # Iterate over batches of data from the training loader
     for batch_X, batch_y in train_loader:
         # Zero the gradients to prevent accumulation
         optimizer.zero_grad()
+        
         # Perform a forward pass to compute the model's predictions
         outputs = mlp(batch_X)
+        
         # Compute the loss between the predictions and the true labels
         loss = criterion(outputs, batch_y)
+        
         # Perform a backward pass to compute the gradients
         loss.backward()
+        
         # Update the model's parameters using the optimizer
         optimizer.step()
+        
+        # Accumulate the training loss
+        train_loss += loss.item()
+        
+        # Compute the number of correct predictions
+        train_correct += ((outputs > 0) == batch_y).float().sum().item()
     
-    # Evaluate the model on the test set every 10 epochs
-    if (epoch + 1) % 10 == 0:
-        # Set the model to evaluation mode
-        mlp.eval()
-        # Disable gradient calculation for evaluation
-        with torch.no_grad():
-            # Perform a forward pass on the test data
-            test_outputs = mlp(X_test)
-            # Compute the loss on the test data
-            test_loss = criterion(test_outputs, y_test)
-            # Compute the accuracy on the test data
-            accuracy = ((test_outputs > 0) == y_test).float().mean()
-        # Print the test loss and accuracy for the current epoch
-        print(f"Epoch {epoch+1}/{num_epochs}, Test Loss: {test_loss:.4f}, Accuracy: {accuracy:.4f}")</code></pre>
+    # Compute average training loss and accuracy for this epoch
+    train_loss /= len(train_loader)
+    train_accuracy = train_correct / len(X_train)
+    
+    # Evaluate the model on the test set
+    mlp.eval()  # Set the model to evaluation mode
+    with torch.no_grad():  # Disable gradient calculation for evaluation
+        test_outputs = mlp(X_test)
+        test_loss = criterion(test_outputs, y_test).item()
+        test_accuracy = ((test_outputs > 0) == y_test).float().mean().item()
+    
+    # Print the training and test metrics for the current epoch
+    print(f"Epoch {epoch+1}/{num_epochs}")
+    print(f"Train Loss: {train_loss:.4f}, Train Accuracy: {train_accuracy:.4f}")
+    print(f"Test Loss: {test_loss:.4f}, Test Accuracy: {test_accuracy:.4f}")
+    print()
+
+# After training, let's visualize the learning curves
+plt.figure(figsize=(12, 5))
+plt.subplot(121)
+plt.plot(train_losses, label='Train Loss')
+plt.plot(test_losses, label='Test Loss')
+plt.title('Loss over epochs')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.legend()
+
+plt.subplot(122)
+plt.plot(train_accuracies, label='Train Accuracy')
+plt.plot(test_accuracies, label='Test Accuracy')
+plt.title('Accuracy over epochs')
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+
+# This visualization helps us understand how our model's performance improved during training</code></pre>
     <p>In this training loop, we use the Binary Cross-Entropy with Logits Loss (BCEWithLogitsLoss) as the loss function, which is suitable for binary classification tasks. The Adam optimizer is used to update the model's parameters. During each epoch, we perform a forward pass to compute the model's predictions, a backward pass to compute the gradients, and an optimization step to update the parameters. We also evaluate the model on the test set every 10 epochs to monitor its performance.</p>
     
     <div class="note">
@@ -344,7 +589,36 @@ with torch.no_grad():  # Disable gradient calculation for prediction
 # Print the predictions on new data
 print("\nPredictions on new data:")
 for i, (pred, binary_pred) in enumerate(zip(predictions, binary_predictions)):
-    print(f"Sample {i+1}: Raw prediction = {pred.item():.4f}, Binary prediction = {binary_pred.item():.0f}")</code></pre>
+    print(f"Sample {i+1}: Raw prediction = {pred.item():.4f}, Binary prediction = {binary_pred.item():.0f}")
+
+# Let's visualize the decision boundary of our trained model
+# We'll create a grid of points and see how our model classifies them
+
+# Generate a grid of points
+x = torch.linspace(-3, 3, 100)
+y = torch.linspace(-3, 3, 100)
+xx, yy = torch.meshgrid(x, y)
+grid = torch.stack([xx.flatten(), yy.flatten()], dim=1).to(device)
+
+# Make predictions on the grid points
+with torch.no_grad():
+    z = mlp(grid).view(100, 100).cpu()
+
+# Plot the decision boundary
+plt.figure(figsize=(10, 8))
+plt.contourf(xx.cpu(), yy.cpu(), z, cmap=plt.cm.RdYlBu, alpha=0.8)
+plt.colorbar()
+plt.title('Decision Boundary')
+plt.xlabel('Feature 1')
+plt.ylabel('Feature 2')
+
+# Plot the training data
+plt.scatter(X_train[:, 0].cpu(), X_train[:, 1].cpu(), c=y_train.cpu(), cmap=plt.cm.RdYlBu, edgecolor='black')
+plt.show()
+
+# This visualization helps us understand how our model is making decisions
+# The blue region represents where the model predicts 0, and the red region where it predicts 1
+# The scattered points are our training data, colored according to their true labels</code></pre>
     <p>In the evaluation phase, we set the model to evaluation mode using <code>mlp.eval()</code> and disable gradient calculation with <code>torch.no_grad()</code>. This ensures that the model's parameters are not updated during evaluation. We then compute the test loss and accuracy to assess the model's performance. Finally, we make predictions on new data to see how the model generalizes to unseen inputs.</p>
     
     <div class="note">
