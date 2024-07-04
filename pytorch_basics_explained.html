@@ -46,24 +46,41 @@
     
     <h2>Setup</h2>
     <p>First, let's import the necessary libraries and set up our environment. We will use PyTorch for building and training neural networks, NumPy for numerical operations, and Matplotlib for plotting.</p>
-    <pre><code>import torch
+    <pre><code># Import the PyTorch library
+import torch
+
+# Import the neural network module from PyTorch
 import torch.nn as nn
+
+# Import the optimization module from PyTorch
 import torch.optim as optim
+
+# Import the functional module from PyTorch for various functions
 import torch.nn.functional as F
+
+# Import the NumPy library for numerical operations
 import numpy as np
+
+# Import the Matplotlib library for plotting
 import matplotlib.pyplot as plt
 
-# Set random seed for reproducibility
+# Set a random seed for PyTorch to ensure reproducibility
 torch.manual_seed(42)
+
+# Set a random seed for NumPy to ensure reproducibility
 np.random.seed(42)
 
-# Check if CUDA is available and set the device
+# Check if CUDA (GPU support) is available and set the device accordingly
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# Print the device being used (CPU or GPU)
 print(f"Using device: {device}")</code></pre>
     <p>We set a random seed to ensure that our results are reproducible. This means that every time we run the code, we will get the same results. This is important for debugging and comparing different models.</p>
     <p>If you are using an Apple silicon device, you can check for MPS availability:</p>
-    <pre><code># Check if MPS is available and set the device
+    <pre><code># Check if MPS (Apple's GPU support) is available and set the device accordingly
 device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+
+# Print the device being used (CPU or MPS)
 print(f"Using device: {device}")</code></pre>
     <p>Setting the device to CUDA or MPS allows us to leverage the power of GPUs for faster computations. If neither is available, we fall back to using the CPU.</p>
 
@@ -72,15 +89,16 @@ print(f"Using device: {device}")</code></pre>
     <p>The most basic building block in PyTorch is called a <strong>tensor</strong>. You can think of a tensor as a container for numbers, similar to a list or an array in other programming languages. The cool thing about tensors is that they can have multiple dimensions, making them perfect for representing complex data like images or text. Tensors are also optimized for GPU acceleration, which makes them very efficient for large-scale computations.</p>
     
     <h3>Creating Tensors</h3>
-    <pre><code>import torch
+    <pre><code># Import the PyTorch library
+import torch
 
-# Create a 1D tensor (vector)
+# Create a 1D tensor (vector) with values [1, 2, 3, 4, 5]
 vector = torch.tensor([1, 2, 3, 4, 5])
 
-# Create a 2D tensor (matrix)
+# Create a 2D tensor (matrix) with values [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 matrix = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 
-# Create a 3D tensor
+# Create a 3D tensor with values [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
 tensor_3d = torch.tensor([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])</code></pre>
     
     <p>In this example, we create tensors of different dimensions. The 1D tensor is like a list, the 2D tensor is like a table or matrix, and the 3D tensor is like a stack of 2D matrices. Understanding these different dimensions is crucial because neural networks often work with high-dimensional data, such as images (which can be represented as 3D tensors) or batches of data (which can be represented as 4D tensors).</p>
@@ -97,17 +115,25 @@ tensor_3d = torch.tensor([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])</code></pre>
     <p>Tensors aren't just for storing numbers; we can perform various operations on them. These operations are the building blocks of neural network computations.</p>
     
     <h3>Basic Operations</h3>
-    <pre><code># Addition
+    <pre><code># Create a 1D tensor with values [1, 2, 3]
 a = torch.tensor([1, 2, 3])
+
+# Create another 1D tensor with values [4, 5, 6]
 b = torch.tensor([4, 5, 6])
+
+# Perform element-wise addition of tensors a and b
 c = a + b  # Result: tensor([5, 7, 9])
 
-# Multiplication
-d = a * b  # Element-wise multiplication, result: tensor([4, 10, 18])
+# Perform element-wise multiplication of tensors a and b
+d = a * b  # Result: tensor([4, 10, 18])
 
-# Matrix multiplication
+# Create a 2D tensor (matrix) with values [[1, 2], [3, 4]]
 m1 = torch.tensor([[1, 2], [3, 4]])
+
+# Create another 2D tensor (matrix) with values [[5, 6], [7, 8]]
 m2 = torch.tensor([[5, 6], [7, 8]])
+
+# Perform matrix multiplication of tensors m1 and m2
 m3 = torch.matmul(m1, m2)  # Result: tensor([[19, 22], [43, 50]])</code></pre>
     
     <p>These operations allow us to manipulate tensors in various ways, which is crucial for building and training neural networks. For example, matrix multiplication is a fundamental operation in neural networks, as it is used in the forward pass to compute the activations of neurons. Understanding these operations will help you implement and debug neural network models more effectively.</p>
@@ -125,15 +151,22 @@ m3 = torch.matmul(m1, m2)  # Result: tensor([[19, 22], [43, 50]])</code></pre>
     
     <h3>Linear Layers</h3>
     <p>A linear layer performs a linear transformation on the input data. It's like applying a mathematical function y = mx + b to each input.</p>
-    <pre><code>import torch.nn as nn
+    <pre><code># Import the neural network module from PyTorch
+import torch.nn as nn
 
+# Create a linear layer that takes 10 input features and produces 5 output features
 linear = nn.Linear(in_features=10, out_features=5)</code></pre>
     <p>This creates a linear layer that takes 10 input features and produces 5 output features. Linear layers are the building blocks of neural networks. They apply a linear transformation to the input data, which is essentially a weighted sum of the input features. This transformation allows the network to learn relationships between the input features and the target output.</p>
     
     <h3>Activation Functions</h3>
     <p>Activation functions introduce non-linearity into the network, allowing it to learn complex patterns.</p>
-    <pre><code>relu = nn.ReLU()
+    <pre><code># Create a ReLU (Rectified Linear Unit) activation function
+relu = nn.ReLU()
+
+# Create a Sigmoid activation function
 sigmoid = nn.Sigmoid()
+
+# Create a Tanh (Hyperbolic Tangent) activation function
 tanh = nn.Tanh()</code></pre>
     <p>These are different types of activation functions, each with its own characteristics. Activation functions introduce non-linearity into the network, which allows it to learn complex patterns in the data. Without activation functions, the network would only be able to learn linear relationships, which are not sufficient for most real-world tasks.</p>
     <ul>
@@ -148,7 +181,8 @@ tanh = nn.Tanh()</code></pre>
     
     <h3>Dropout</h3>
     <p>Dropout is a regularization technique that helps prevent overfitting by randomly "dropping out" (setting to zero) a proportion of neurons during training.</p>
-    <pre><code>dropout = nn.Dropout(p=0.5)</code></pre>
+    <pre><code># Create a Dropout layer with a dropout probability of 0.5 (50%)
+dropout = nn.Dropout(p=0.5)</code></pre>
     <p>This creates a dropout layer that will randomly zero out 50% of the inputs during training. Dropout is a regularization technique that helps prevent overfitting by ensuring that the network does not rely too heavily on any single neuron. By randomly dropping out neurons during training, dropout forces the network to learn more robust features that generalize better to new data.</p>
     
     <div class="warning">
@@ -157,34 +191,41 @@ tanh = nn.Tanh()</code></pre>
     
     <h3>Batch Normalization</h3>
     <p>Batch normalization normalizes the inputs to a layer for each mini-batch, which can help the network train faster and more stably.</p>
-    <pre><code>batch_norm = nn.BatchNorm1d(10)</code></pre>
+    <pre><code># Create a Batch Normalization layer for inputs with 10 features
+batch_norm = nn.BatchNorm1d(10)</code></pre>
     <p>This creates a batch normalization layer for inputs with 10 features. Batch normalization normalizes the inputs to a layer for each mini-batch, which can help the network train faster and more stably. By normalizing the inputs, batch normalization reduces the internal covariate shift, which is the change in the distribution of layer inputs during training. This allows for higher learning rates and can lead to faster convergence.</p>
     
     <h2>4. Creating a Multi-Layer Perceptron (MLP)</h2>
     <p>Now that we understand the building blocks, let's put them together to create an MLP!</p>
-    <pre><code>class MLP(nn.Module):
+    <pre><code># Define a class for the Multi-Layer Perceptron (MLP) that inherits from nn.Module
+class MLP(nn.Module):
+    # Initialize the MLP with input size, hidden layer sizes, and output size
     def __init__(self, input_size, hidden_sizes, output_size):
+        # Call the parent class (nn.Module) constructor
         super(MLP, self).__init__()
+        # Create a list to hold the layers of the MLP
         self.layers = nn.ModuleList()
         
-        # Input layer
+        # Add the input layer with ReLU activation
         self.layers.append(nn.Linear(input_size, hidden_sizes[0]))
         self.layers.append(nn.ReLU())
         
-        # Hidden layers
+        # Add the hidden layers with ReLU activation
         for i in range(len(hidden_sizes) - 1):
             self.layers.append(nn.Linear(hidden_sizes[i], hidden_sizes[i+1]))
             self.layers.append(nn.ReLU())
         
-        # Output layer
+        # Add the output layer
         self.layers.append(nn.Linear(hidden_sizes[-1], output_size))
     
+    # Define the forward pass of the MLP
     def forward(self, x):
+        # Pass the input through each layer in the MLP
         for layer in self.layers:
             x = layer(x)
         return x
 
-# Create an instance of the MLP
+# Create an instance of the MLP with input size 10, hidden layer sizes [64, 32], and output size 1
 mlp = MLP(input_size=10, hidden_sizes=[64, 32], output_size=1)</code></pre>
     
     <p>This code defines an MLP with an input size of 10, two hidden layers with 64 and 32 neurons respectively, and an output size of 1. The hidden layers use ReLU activation functions to introduce non-linearity, which allows the network to learn complex patterns in the data. The output layer does not use an activation function, as it is typically used for regression tasks or binary classification (with a subsequent sigmoid activation).</p>
@@ -199,16 +240,24 @@ mlp = MLP(input_size=10, hidden_sizes=[64, 32], output_size=1)</code></pre>
     
     <h2>Generate a Simple Dataset</h2>
     <p>Before training the MLP, we need to generate a simple dataset. This dataset will be used to train and evaluate the model. For this example, we will create a synthetic dataset where the input features are randomly generated, and the target labels are binary values indicating whether the sum of the input features is greater than zero.</p>
-    <pre><code>def generate_data(num_samples=1000):
+    <pre><code># Define a function to generate synthetic data
+def generate_data(num_samples=1000):
+    # Create input features with random values from a normal distribution
     X = torch.randn(num_samples, input_size)
+    # Create binary target labels based on whether the sum of input features is greater than zero
     y = (X.sum(dim=1) > 0).float().view(-1, 1)
     return X, y
 
+# Generate training data with 1000 samples
 X_train, y_train = generate_data()
+
+# Generate test data with 200 samples
 X_test, y_test = generate_data(200)
 
-# Move data to the appropriate device
+# Move the training data to the appropriate device (CPU, CUDA, or MPS)
 X_train, y_train = X_train.to(device), y_train.to(device)
+
+# Move the test data to the appropriate device (CPU, CUDA, or MPS)
 X_test, y_test = X_test.to(device), y_test.to(device)</code></pre>
     <p>In this code, <code>generate_data</code> creates a dataset with a specified number of samples. Each sample consists of <code>input_size</code> features drawn from a standard normal distribution. The target label <code>y</code> is 1 if the sum of the input features is greater than zero, and 0 otherwise. This simple rule allows us to create a binary classification task.</p>
     <p>We generate separate training and test datasets to evaluate the model's performance on unseen data. The training dataset contains 1000 samples, while the test dataset contains 200 samples. We also move the data to the appropriate device (CPU, CUDA, or MPS) for efficient computation.</p>
@@ -223,28 +272,45 @@ X_test, y_test = X_test.to(device), y_test.to(device)</code></pre>
         <li><strong>Training Loop:</strong> Repeatedly feeds data through the model, computes the loss, and updates the parameters.</li>
     </ul>
     
-    <pre><code># Define loss function and optimizer
+    <pre><code># Define the loss function (Binary Cross-Entropy with Logits Loss)
 criterion = nn.BCEWithLogitsLoss()
+
+# Define the optimizer (Adam) with a learning rate of 0.001
 optimizer = optim.Adam(mlp.parameters(), lr=0.001)
 
-# Training loop
+# Set the number of epochs (iterations over the entire dataset) for training
 num_epochs = 50
+
+# Training loop
 for epoch in range(num_epochs):
+    # Set the model to training mode
     mlp.train()
+    # Iterate over batches of data from the training loader
     for batch_X, batch_y in train_loader:
+        # Zero the gradients to prevent accumulation
         optimizer.zero_grad()
+        # Perform a forward pass to compute the model's predictions
         outputs = mlp(batch_X)
+        # Compute the loss between the predictions and the true labels
         loss = criterion(outputs, batch_y)
+        # Perform a backward pass to compute the gradients
         loss.backward()
+        # Update the model's parameters using the optimizer
         optimizer.step()
     
-    # Evaluate on the test set
+    # Evaluate the model on the test set every 10 epochs
     if (epoch + 1) % 10 == 0:
+        # Set the model to evaluation mode
         mlp.eval()
+        # Disable gradient calculation for evaluation
         with torch.no_grad():
+            # Perform a forward pass on the test data
             test_outputs = mlp(X_test)
+            # Compute the loss on the test data
             test_loss = criterion(test_outputs, y_test)
+            # Compute the accuracy on the test data
             accuracy = ((test_outputs > 0) == y_test).float().mean()
+        # Print the test loss and accuracy for the current epoch
         print(f"Epoch {epoch+1}/{num_epochs}, Test Loss: {test_loss:.4f}, Accuracy: {accuracy:.4f}")</code></pre>
     <p>In this training loop, we use the Binary Cross-Entropy with Logits Loss (BCEWithLogitsLoss) as the loss function, which is suitable for binary classification tasks. The Adam optimizer is used to update the model's parameters. During each epoch, we perform a forward pass to compute the model's predictions, a backward pass to compute the gradients, and an optimization step to update the parameters. We also evaluate the model on the test set every 10 epochs to monitor its performance.</p>
     
@@ -259,21 +325,23 @@ for epoch in range(num_epochs):
     <h2>6. Evaluating and Using the Trained MLP</h2>
     <p>After training, we need to evaluate how well our model performs on new, unseen data. This step is crucial because it allows us to assess the model's generalization ability, which is its performance on data it has never seen before. A model that performs well on the training data but poorly on new data is likely overfitting, meaning it has learned to memorize the training data rather than generalize from it.</p>
     
-    <pre><code># Evaluate on the test set
-mlp.eval()
-with torch.no_grad():
-    test_outputs = mlp(X_test)
-    test_loss = criterion(test_outputs, y_test)
-    accuracy = ((test_outputs > 0) == y_test).float().mean()
+    <pre><code># Evaluate the model on the test set
+mlp.eval()  # Set the model to evaluation mode
+with torch.no_grad():  # Disable gradient calculation for evaluation
+    test_outputs = mlp(X_test)  # Perform a forward pass on the test data
+    test_loss = criterion(test_outputs, y_test)  # Compute the loss on the test data
+    accuracy = ((test_outputs > 0) == y_test).float().mean()  # Compute the accuracy on the test data
     
+# Print the final test loss and accuracy
 print(f"Final Test Loss: {test_loss:.4f}, Accuracy: {accuracy:.4f}")
 
 # Make predictions on new data
-new_data = torch.randn(5, input_size).to(device)
-with torch.no_grad():
-    predictions = mlp(new_data)
-    binary_predictions = (predictions > 0).float()
+new_data = torch.randn(5, input_size).to(device)  # Generate new random data and move to the appropriate device
+with torch.no_grad():  # Disable gradient calculation for prediction
+    predictions = mlp(new_data)  # Perform a forward pass on the new data
+    binary_predictions = (predictions > 0).float()  # Convert raw predictions to binary predictions
 
+# Print the predictions on new data
 print("\nPredictions on new data:")
 for i, (pred, binary_pred) in enumerate(zip(predictions, binary_predictions)):
     print(f"Sample {i+1}: Raw prediction = {pred.item():.4f}, Binary prediction = {binary_pred.item():.0f}")</code></pre>
