@@ -16,13 +16,16 @@
         h1, h2, h3 {
             color: #2c3e50;
         }
-        code {
+        pre {
             background-color: #f4f4f4;
             border: 1px solid #ddd;
             border-radius: 4px;
-            display: block;
             padding: 10px;
             margin: 10px 0;
+            overflow-x: auto;
+        }
+        code {
+            font-family: monospace;
         }
         .note {
             background-color: #e7f3fe;
@@ -46,8 +49,7 @@
     <p>The most basic building block in PyTorch is called a <strong>tensor</strong>. You can think of a tensor as a container for numbers, similar to a list or an array in other programming languages. The cool thing about tensors is that they can have multiple dimensions, making them perfect for representing complex data like images or text.</p>
     
     <h3>Creating Tensors</h3>
-    <code>
-import torch
+    <pre><code>import torch
 
 # Create a 1D tensor (vector)
 vector = torch.tensor([1, 2, 3, 4, 5])
@@ -56,8 +58,7 @@ vector = torch.tensor([1, 2, 3, 4, 5])
 matrix = torch.tensor([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 
 # Create a 3D tensor
-tensor_3d = torch.tensor([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
-    </code>
+tensor_3d = torch.tensor([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])</code></pre>
     
     <p>In this example, we create tensors of different dimensions. The 1D tensor is like a list, the 2D tensor is like a table or matrix, and the 3D tensor is like a stack of 2D matrices.</p>
     
@@ -73,8 +74,7 @@ tensor_3d = torch.tensor([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
     <p>Tensors aren't just for storing numbers; we can perform various operations on them. These operations are the building blocks of neural network computations.</p>
     
     <h3>Basic Operations</h3>
-    <code>
-# Addition
+    <pre><code># Addition
 a = torch.tensor([1, 2, 3])
 b = torch.tensor([4, 5, 6])
 c = a + b  # Result: tensor([5, 7, 9])
@@ -85,8 +85,7 @@ d = a * b  # Element-wise multiplication, result: tensor([4, 10, 18])
 # Matrix multiplication
 m1 = torch.tensor([[1, 2], [3, 4]])
 m2 = torch.tensor([[5, 6], [7, 8]])
-m3 = torch.matmul(m1, m2)  # Result: tensor([[19, 22], [43, 50]])
-    </code>
+m3 = torch.matmul(m1, m2)  # Result: tensor([[19, 22], [43, 50]])</code></pre>
     
     <p>These operations allow us to manipulate tensors in various ways, which is crucial for building and training neural networks.</p>
     
@@ -103,20 +102,16 @@ m3 = torch.matmul(m1, m2)  # Result: tensor([[19, 22], [43, 50]])
     
     <h3>Linear Layers</h3>
     <p>A linear layer performs a linear transformation on the input data. It's like applying a mathematical function y = mx + b to each input.</p>
-    <code>
-import torch.nn as nn
+    <pre><code>import torch.nn as nn
 
-linear = nn.Linear(in_features=10, out_features=5)
-    </code>
+linear = nn.Linear(in_features=10, out_features=5)</code></pre>
     <p>This creates a linear layer that takes 10 input features and produces 5 output features.</p>
     
     <h3>Activation Functions</h3>
     <p>Activation functions introduce non-linearity into the network, allowing it to learn complex patterns.</p>
-    <code>
-relu = nn.ReLU()
+    <pre><code>relu = nn.ReLU()
 sigmoid = nn.Sigmoid()
-tanh = nn.Tanh()
-    </code>
+tanh = nn.Tanh()</code></pre>
     <p>These are different types of activation functions, each with its own characteristics:</p>
     <ul>
         <li>ReLU (Rectified Linear Unit): Returns 0 for negative inputs, and the input itself for positive inputs.</li>
@@ -130,9 +125,7 @@ tanh = nn.Tanh()
     
     <h3>Dropout</h3>
     <p>Dropout is a regularization technique that helps prevent overfitting by randomly "dropping out" (setting to zero) a proportion of neurons during training.</p>
-    <code>
-dropout = nn.Dropout(p=0.5)
-    </code>
+    <pre><code>dropout = nn.Dropout(p=0.5)</code></pre>
     <p>This creates a dropout layer that will randomly zero out 50% of the inputs during training.</p>
     
     <div class="warning">
@@ -141,15 +134,12 @@ dropout = nn.Dropout(p=0.5)
     
     <h3>Batch Normalization</h3>
     <p>Batch normalization normalizes the inputs to a layer for each mini-batch, which can help the network train faster and more stably.</p>
-    <code>
-batch_norm = nn.BatchNorm1d(10)
-    </code>
+    <pre><code>batch_norm = nn.BatchNorm1d(10)</code></pre>
     <p>This creates a batch normalization layer for inputs with 10 features.</p>
     
     <h2>4. Creating a Multi-Layer Perceptron (MLP)</h2>
     <p>Now that we understand the building blocks, let's put them together to create an MLP!</p>
-    <code>
-class MLP(nn.Module):
+    <pre><code>class MLP(nn.Module):
     def __init__(self, input_size, hidden_sizes, output_size):
         super(MLP, self).__init__()
         self.layers = nn.ModuleList()
@@ -172,8 +162,7 @@ class MLP(nn.Module):
         return x
 
 # Create an instance of the MLP
-mlp = MLP(input_size=10, hidden_sizes=[64, 32], output_size=1)
-    </code>
+mlp = MLP(input_size=10, hidden_sizes=[64, 32], output_size=1)</code></pre>
     
     <p>This code defines an MLP with an input size of 10, two hidden layers with 64 and 32 neurons respectively, and an output size of 1.</p>
     
@@ -195,8 +184,7 @@ mlp = MLP(input_size=10, hidden_sizes=[64, 32], output_size=1)
         <li><strong>Training Loop:</strong> Repeatedly feeds data through the model, computes the loss, and updates the parameters.</li>
     </ul>
     
-    <code>
-import torch.optim as optim
+    <pre><code>import torch.optim as optim
 
 # Define loss function and optimizer
 criterion = nn.MSELoss()
@@ -212,8 +200,7 @@ for epoch in range(num_epochs):
         # Backward pass and optimize
         optimizer.zero_grad()
         loss.backward()
-        optimizer.step()
-    </code>
+        optimizer.step()</code></pre>
     
     <div class="note">
         <p><strong>Intuition:</strong> Think of training as teaching the network. You show it examples (data), see how well it does (loss), and then give it feedback on how to improve (backpropagation).</p>
@@ -226,8 +213,7 @@ for epoch in range(num_epochs):
     <h2>6. Evaluating and Using the Trained MLP</h2>
     <p>After training, we need to evaluate how well our model performs on new, unseen data.</p>
     
-    <code>
-# Evaluation
+    <pre><code># Evaluation
 mlp.eval()  # Set the model to evaluation mode
 with torch.no_grad():  # Disable gradient calculation
     test_outputs = mlp(X_test)
@@ -241,8 +227,7 @@ print(f"Test Loss: {test_loss:.4f}, Accuracy: {accuracy:.4f}")
 # Make predictions on new data
 new_data = torch.randn(5, input_size)  # Create 5 random input samples
 predictions = mlp(new_data)  # Get model predictions for the new data
-print("Predictions for new data:", predictions)
-    </code>
+print("Predictions for new data:", predictions)</code></pre>
     
     <div class="note">
         <p><strong>Intuition:</strong> Evaluation is like giving your trained model a final exam. You test it on data it hasn't seen before to see how well it has learned to generalize.</p>
