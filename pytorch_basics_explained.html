@@ -232,13 +232,16 @@ mlp.eval()  # Set the model to evaluation mode
 with torch.no_grad():  # Disable gradient calculation
     test_outputs = mlp(X_test)
     test_loss = criterion(test_outputs, y_test)
-    accuracy = ((test_outputs > 0.5) == y_test).float().mean()
+    # For binary classification, we consider outputs > 0.5 as positive predictions
+    predicted_labels = (test_outputs > 0.5).float()
+    accuracy = (predicted_labels == y_test).float().mean()
 
 print(f"Test Loss: {test_loss:.4f}, Accuracy: {accuracy:.4f}")
 
 # Make predictions on new data
-new_data = torch.randn(5, input_size)
-predictions = mlp(new_data)
+new_data = torch.randn(5, input_size)  # Create 5 random input samples
+predictions = mlp(new_data)  # Get model predictions for the new data
+print("Predictions for new data:", predictions)
     </code>
     
     <div class="note">
