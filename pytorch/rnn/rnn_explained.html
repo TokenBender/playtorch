@@ -4,51 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recurrent Neural Networks (RNNs) Explained: A Comprehensive Tutorial</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        h1, h2, h3 {
-            color: #2c3e50;
-        }
-        pre {
-            background-color: #f4f4f4;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 10px;
-            margin: 10px 0;
-            overflow-x: auto;
-        }
-        code {
-            font-family: monospace;
-        }
-        .note {
-            background-color: #e7f3fe;
-            border-left: 6px solid #2196F3;
-            margin-bottom: 15px;
-            padding: 4px 12px;
-        }
-        .warning {
-            background-color: #ffffcc;
-            border-left: 6px solid #ffeb3b;
-            margin-bottom: 15px;
-            padding: 4px 12px;
-        }
-        .example {
-            background-color: #e8f5e9;
-            border-left: 6px solid #4caf50;
-            margin-bottom: 15px;
-            padding: 4px 12px;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Recurrent Neural Networks (RNNs) Explained: A Comprehensive Tutorial</h1>
+
+    <div class="svg-container">
+        <svg class="svg-content" viewBox="0 0 400 100">
+            <rect x="10" y="10" width="380" height="80" fill="#e7f3fe" stroke="#2196F3" stroke-width="2"/>
+            <text x="200" y="55" text-anchor="middle" font-size="20" fill="#2c3e50">RNN: Unfolding Time</text>
+        </svg>
+    </div>
     
     <h2>Table of Contents</h2>
     <ol>
@@ -96,6 +62,19 @@
         <li><strong>Hidden State (h<sub>t</sub>):</strong> The 'memory' of the network.</li>
         <li><strong>Output (y<sub>t</sub>):</strong> The output at the current time step.</li>
     </ul>
+
+    <div class="svg-container">
+        <svg class="svg-content" viewBox="0 0 400 200">
+            <rect x="50" y="50" width="100" height="100" fill="#e7f3fe" stroke="#2196F3" stroke-width="2"/>
+            <text x="100" y="100" text-anchor="middle" font-size="14" fill="#2c3e50">RNN Cell</text>
+            <line x1="0" y1="100" x2="50" y2="100" stroke="#2c3e50" stroke-width="2"/>
+            <text x="25" y="90" text-anchor="middle" font-size="12" fill="#2c3e50">x<tspan baseline-shift="sub">t</tspan></text>
+            <line x1="150" y1="100" x2="200" y2="100" stroke="#2c3e50" stroke-width="2"/>
+            <text x="175" y="90" text-anchor="middle" font-size="12" fill="#2c3e50">h<tspan baseline-shift="sub">t</tspan></text>
+            <path d="M100 150 Q100 180 50 180 Q0 180 0 150" fill="none" stroke="#2c3e50" stroke-width="2"/>
+            <text x="50" y="195" text-anchor="middle" font-size="12" fill="#2c3e50">h<tspan baseline-shift="sub">t-1</tspan></text>
+        </svg>
+    </div>
 
     <pre><code>
 h_t = tanh(W_hh * h_(t-1) + W_xh * x_t)
@@ -151,6 +130,23 @@ y_t = W_hy * h_t + b_y
         <li><strong>Input Gate:</strong> Decides which values we'll update.</li>
         <li><strong>Output Gate:</strong> Decides what parts of the cell state we're going to output.</li>
     </ul>
+
+    <div class="svg-container">
+        <svg class="svg-content" viewBox="0 0 400 200">
+            <rect x="50" y="50" width="300" height="100" fill="#e7f3fe" stroke="#2196F3" stroke-width="2"/>
+            <text x="200" y="30" text-anchor="middle" font-size="16" fill="#2c3e50">LSTM Cell</text>
+            <line x1="0" y1="100" x2="50" y2="100" stroke="#2c3e50" stroke-width="2"/>
+            <text x="25" y="90" text-anchor="middle" font-size="12" fill="#2c3e50">x<tspan baseline-shift="sub">t</tspan></text>
+            <line x1="350" y1="100" x2="400" y2="100" stroke="#2c3e50" stroke-width="2"/>
+            <text x="375" y="90" text-anchor="middle" font-size="12" fill="#2c3e50">h<tspan baseline-shift="sub">t</tspan></text>
+            <rect x="75" y="75" width="50" height="50" fill="#ffffcc" stroke="#ffeb3b" stroke-width="2"/>
+            <text x="100" y="105" text-anchor="middle" font-size="12" fill="#2c3e50">σ</text>
+            <rect x="150" y="75" width="50" height="50" fill="#ffffcc" stroke="#ffeb3b" stroke-width="2"/>
+            <text x="175" y="105" text-anchor="middle" font-size="12" fill="#2c3e50">σ</text>
+            <rect x="225" y="75" width="50" height="50" fill="#ffffcc" stroke="#ffeb3b" stroke-width="2"/>
+            <text x="250" y="105" text-anchor="middle" font-size="12" fill="#2c3e50">tanh</text>
+        </svg>
+    </div>
 
     <pre><code>
 class SimpleLSTM(nn.Module):
@@ -240,5 +236,6 @@ print(output.shape)  # Should be (3, 5)
     <div class="note">
         <p><strong>Remember:</strong> The best way to truly understand RNNs is to implement them yourself and experiment with different architectures and hyperparameters. Happy coding!</p>
     </div>
+    <script src="script.js"></script>
 </body>
 </html>
