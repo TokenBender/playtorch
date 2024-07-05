@@ -51,9 +51,20 @@
     <h2 id="intuition">3. The Intuition: How Humans Process Sequences</h2>
     <p>Think about how you understand language. When you read a sentence, you don't start from scratch with each word. You understand each word based on your understanding of the previous words. RNNs work similarly.</p>
 
-    <div class="note">
-        <p><strong>Analogy:</strong> An RNN is like a chain of repeated neural networks, each passing a message to its successor.</p>
+    <div class="example">
+        <p><strong>Example:</strong> Consider the sentence: "The cat sat on the ___." Your brain automatically fills in "mat" or "chair" because it has learned patterns from previous experiences. An RNN does the same thing by maintaining a "memory" of previous inputs.</p>
     </div>
+
+    <div class="note">
+        <p><strong>Analogy:</strong> An RNN is like a chain of repeated neural networks, each passing a message to its successor. Imagine a game of telephone, but instead of distorting the message, each person adds relevant information before passing it on.</p>
+    </div>
+
+    <p>Let's break this down further:</p>
+    <ol>
+        <li><strong>Sequential Processing:</strong> Just as you read a sentence word by word, an RNN processes data step by step.</li>
+        <li><strong>Memory:</strong> Your brain retains important information from previous words. Similarly, an RNN has a "hidden state" that acts as its memory.</li>
+        <li><strong>Context:</strong> You interpret each word based on the context of previous words. An RNN uses its hidden state to provide context for processing each new input.</li>
+    </ol>
 
     <h2 id="structure">4. Basic Structure of an RNN</h2>
     <p>An RNN has a 'memory' which captures information about what has been calculated so far. Let's break down its structure:</p>
@@ -177,37 +188,129 @@ class SimpleLSTM(nn.Module):
         <li><strong>Attention Mechanisms:</strong> Allow the model to focus on different parts of the input sequence.</li>
     </ul>
 
-    <h2 id="implementing">12. Implementing RNNs with PyTorch</h2>
-    <p>Here's a simple implementation of an RNN in PyTorch:</p>
+    <h2 id="implementing">12. Implementing RNNs with PyTorch: A Case Study</h2>
+    <p>Let's walk through a practical example of using RNNs to solve a real problem: predicting the next character in a sequence. This is a fundamental task in natural language processing and can be extended to more complex applications like text generation.</p>
 
+    <h3>Problem: Character-level Language Model</h3>
+    <p>We'll create a model that, given a sequence of characters, predicts the next character. This can be used to generate text one character at a time.</p>
+
+    <h3>Step 1: Preparing the Data</h3>
     <pre><code>
 import torch
 import torch.nn as nn
+import string
 
-class SimpleRNN(nn.Module):
-    def __init__(self, input_size, hidden_size, output_size):
-        super(SimpleRNN, self).__init__()
-        self.hidden_size = hidden_size
-        self.rnn = nn.RNN(input_size, hidden_size, batch_first=True)
-        self.fc = nn.Linear(hidden_size, output_size)
-    
-    def forward(self, x):
-        _, hidden = self.rnn(x)
-        output = self.fc(hidden.squeeze(0))
-        return output
+# Sample text (you can use a larger corpus for better results)
+text = "Hello world! How are you doing today? I hope you're having a great day!"
 
-# Example usage
-input_size = 10
-hidden_size = 20
-output_size = 5
-seq_length = 15
-batch_size = 3
+# Create character to index and index to character mappings
+chars = string.printable
+char_to_idx = {ch: i for i, ch in enumerate(chars)}
+idx_to_char = {i: ch for i, ch in enumerate(chars)}
 
-model = SimpleRNN(input_size, hidden_size, output_size)
-input_tensor = torch.randn(batch_size, seq_length, input_size)
-output = model(input_tensor)
-print(output.shape)  # Should be (3, 5)
+# Convert text to indices
+data = [char_to_idx[ch] for ch in text]
     </code></pre>
+
+    <h3>Step 2: Creating Dataset and DataLoader</h3>
+    <pre><code>
+class TextDataset(torch.utils.data.Dataset):
+    def __init__(self, text, seq_length):
+        self.text = text
+        self.seq_length = seq_length
+
+    def __len__(self):
+        return len(self.text) - self.seq_length
+
+    def __getitem__(self, idx):
+        return (
+            torch.tensor(self.text[idx:idx+self.seq_length]),
+            torch.tensor(self.text[idx+1:idx+self.seq_length+1])
+        )
+
+# Create dataset and dataloader
+seq_length = 50
+dataset = TextDataset(data, seq_length)
+dataloader = torch.utils.data.DataLoader(dataset, batch_size=32, shuffle=True)
+    </code></pre>
+
+    <h3>Step 3: Defining the RNN Model</h3>
+    <pre><code>
+class CharRNN(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size, n_layers=1):
+        super(CharRNN, self).__init__()
+        self.hidden_size = hidden_size
+        self.n_layers = n_layers
+
+        self.embedding = nn.Embedding(input_size, hidden_size)
+        self.rnn = nn.RNN(hidden_size, hidden_size, n_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_size, output_size)
+
+    def forward(self, x, hidden):
+        x = self.embedding(x)
+        output, hidden = self.rnn(x, hidden)
+        output = self.fc(output)
+        return output, hidden
+
+    def init_hidden(self, batch_size):
+        return torch.zeros(self.n_layers, batch_size, self.hidden_size)
+
+# Instantiate the model
+n_characters = len(chars)
+hidden_size = 128
+model = CharRNN(n_characters, hidden_size, n_characters)
+    </code></pre>
+
+    <h3>Step 4: Training the Model</h3>
+    <pre><code>
+criterion = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+
+n_epochs = 100
+for epoch in range(n_epochs):
+    hidden = model.init_hidden(32)
+    for inputs, targets in dataloader:
+        hidden = hidden.detach()
+        outputs, hidden = model(inputs, hidden)
+        loss = criterion(outputs.transpose(1, 2), targets)
+        
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+    
+    if (epoch + 1) % 10 == 0:
+        print(f'Epoch [{epoch+1}/{n_epochs}], Loss: {loss.item():.4f}')
+    </code></pre>
+
+    <h3>Step 5: Generating Text</h3>
+    <pre><code>
+def generate_text(model, start_string, length=100):
+    model.eval()
+    chars = [char_to_idx[ch] for ch in start_string]
+    hidden = model.init_hidden(1)
+    
+    with torch.no_grad():
+        for _ in range(length):
+            x = torch.tensor([chars[-1]]).unsqueeze(0)
+            output, hidden = model(x, hidden)
+            
+            # Sample from the network as a multinomial distribution
+            probs = nn.functional.softmax(output[:, -1], dim=1)
+            pred = torch.multinomial(probs, num_samples=1).item()
+            
+            chars.append(pred)
+    
+    return ''.join([idx_to_char[idx] for idx in chars])
+
+# Generate some text
+print(generate_text(model, "Hello", length=100))
+    </code></pre>
+
+    <div class="note">
+        <p><strong>Explanation:</strong> This RNN learns patterns in character sequences. It embeds each character into a vector, processes the sequence through RNN layers, and predicts the next character. During text generation, it uses its learned patterns to produce new text one character at a time.</p>
+    </div>
+
+    <p>This case study demonstrates how RNNs can be used for sequence modeling tasks. The same principles can be applied to various problems involving sequential data, such as time series prediction, sentiment analysis, or machine translation.</p>
 
     <h2 id="applications">13. Common Applications and Real-world Examples</h2>
     <ul>
@@ -233,8 +336,14 @@ print(output.shape)  # Should be (3, 5)
     <h2>Conclusion</h2>
     <p>RNNs are a powerful tool for working with sequential data. While they have some limitations, understanding RNNs is crucial for anyone working in deep learning, as they form the foundation for many advanced concepts in sequence modeling.</p>
 
+    <p>Through our case study of building a character-level language model, we've seen how RNNs can be applied to real-world problems. This example demonstrates the power of RNNs in capturing patterns in sequential data and generating new sequences based on learned patterns.</p>
+
     <div class="note">
-        <p><strong>Remember:</strong> The best way to truly understand RNNs is to implement them yourself and experiment with different architectures and hyperparameters. Happy coding!</p>
+        <p><strong>Remember:</strong> The best way to truly understand RNNs is to implement them yourself and experiment with different architectures and hyperparameters. Try modifying the case study code to work with different types of sequential data or to solve different problems. Happy coding!</p>
+    </div>
+
+    <div class="example">
+        <p><strong>Further Exploration:</strong> Try extending the character-level language model to work with words instead of characters. How would you modify the code to handle this? What changes would you need to make to the model architecture?</p>
     </div>
     <script src="script.js"></script>
 </body>
